@@ -4,22 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#070b14">
-<title>⚡ AI Command Center V3</title>
+<title>⚡ AI Command Center V4</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#070b14;color:#eef4ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}.wrap{max-width:1100px;margin:auto;padding:18px 14px 30px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.title{font-size:25px;font-weight:850}.sub,.repo,.time{font-size:11px;color:#8fa0bd}.btn,.runbtn,.open{border-radius:11px;padding:10px 13px;font-weight:800;border:1px solid #263753;text-decoration:none;font-size:11px}.btn{background:#10192b;color:#eef4ff;cursor:pointer}.stats,.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(4,1fr);margin-bottom:15px}.grid{grid-template-columns:repeat(2,1fr)}.stat,.card{background:#0f1626;border:1px solid #22304a;border-radius:17px;padding:15px}.stat b{display:block;font-size:24px}.stat span,.recent-title{font-size:10px;color:#8fa0bd;text-transform:uppercase}.head,.main,.item{display:flex;justify-content:space-between;gap:10px}.name{font-size:18px;font-weight:850}.badge{font-size:10px;font-weight:850;padding:6px 9px;border-radius:20px;white-space:nowrap}.ok{background:#123e30;color:#37d996}.bad{background:#461b25;color:#ff8b99}.run{background:#3d3313;color:#ffd166}.neutral{background:#202b3e;color:#aebbd0}.main{align-items:end;margin:17px 0 13px}.runno{font-size:28px;font-weight:900}.actions{display:flex;gap:7px;flex-wrap:wrap}.runbtn{background:#173c31;color:#48e0a4;border-color:#285d4d;cursor:pointer}.runbtn:disabled{opacity:.55;cursor:wait}.open{background:#62a8ff;color:#08111e;border-color:#62a8ff}.recent{border-top:1px solid #22304a;padding-top:10px}.item{padding:7px 0;border-bottom:1px solid #19253a}.item a{color:#eef4ff;text-decoration:none;font-size:11px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#74829a;margin-right:7px}.dot.ok{background:#37d996}.dot.bad{background:#ff6577}.dot.run{background:#ffd166}.schedule{margin:11px 0;padding:9px 10px;background:#0b1220;border:1px solid #1d2b42;border-radius:11px;font-size:11px;color:#9baaca}.empty,.err{font-size:12px;color:#8fa0bd;padding:11px 0}.err{color:#ff9aa6}.foot{text-align:center;color:#64738c;font-size:10px;margin-top:20px}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#101b2d;border:1px solid #30425f;color:#eef4ff;padding:11px 16px;border-radius:12px;font-size:12px;font-weight:700;display:none;z-index:99;box-shadow:0 10px 30px #0008}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.title{font-size:21px}.main{align-items:flex-start;flex-direction:column}.actions{width:100%}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div><div class="title">⚡ AI Command Center V3</div><div class="sub">GitHub Automation Control • Secure RUN NOW</div></div><button class="btn" onclick="loadAll()">↻ Refresh</button></div>
+<div class="top"><div><div class="title">⚡ AI Command Center V4</div><div class="sub">GitHub Automation Control • 5 pipelines • Secure RUN NOW</div></div><button class="btn" onclick="loadAll()">↻ Refresh</button></div>
 <div class="stats">
-<div class="stat"><b>4</b><span>Automations</span></div>
+<div class="stat"><b>5</b><span>Automations</span></div>
 <div class="stat"><b id="success">—</b><span>Success</span></div>
 <div class="stat"><b id="running">—</b><span>Running</span></div>
 <div class="stat"><b id="failed">—</b><span>Failed</span></div>
 </div>
 <div id="grid" class="grid"></div>
-<div class="foot">Live public GitHub Actions data • V3 • <span id="updated">—</span></div>
+<div class="foot">Live public GitHub Actions data • V4 • <span id="updated">—</span></div>
 </div>
 <div id="toast" class="toast"></div>
 <script>
@@ -29,7 +29,8 @@ const P=[
 ["🎨","Toon Kids","toon_kids_automation","toon_kids_daily.yml","1:00 PM & 8:30 PM IST"],
 ["🧠","Think Fast Daily","think-fast-daily-automation","think-fast-daily.yml","12:00 PM & 6:00 PM IST"],
 ["🔮","What If Daily","what-if-daily-automation","what_if_daily.yml","7:00 PM & 10:30 PM IST"],
-["🌎","FactVerse AI","factverse-ai-automation","factverse.yml","12:00 PM & 6:00 PM IST"]
+["🌎","FactVerse AI","factverse-ai-automation","factverse.yml","12:00 PM & 6:00 PM IST"],
+["📱","Auto Social Post","auto-social-post","generate.yml","12:00 PM & 6:00 PM IST"]
 ];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ago=x=>{let m=Math.floor((Date.now()-new Date(x))/60000);return m<1?"just now":m<60?m+" min ago":m<1440?Math.floor(m/60)+" hr ago":Math.floor(m/1440)+" day(s) ago"};
