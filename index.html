@@ -1,10 +1,825 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Command Center</title><style>body{margin:0;background:#070b14;color:#eef4ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}.wrap{max-width:1100px;margin:auto;padding:20px 14px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.title{font-size:25px;font-weight:800}.sub{font-size:12px;color:#8fa0bd}.btn{background:#10192b;color:#eef4ff;border:1px solid #22304a;border-radius:12px;padding:10px 13px;font-weight:700}.stats,.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(4,1fr);margin-bottom:15px}.stat,.card{background:#0f1626;border:1px solid #22304a;border-radius:17px;padding:15px}.stat b{font-size:23px;display:block}.stat span{font-size:11px;color:#8fa0bd;text-transform:uppercase}.grid{grid-template-columns:repeat(2,1fr)}.head,.main,.item{display:flex;justify-content:space-between;gap:10px}.name{font-size:18px;font-weight:800}.repo,.time{font-size:11px;color:#8fa0bd}.badge{font-size:11px;font-weight:800;padding:6px 9px;border-radius:99px}.ok{background:#123e30;color:#37d996}.bad{background:#461b25;color:#ff8b99}.run{background:#3d3313;color:#ffd166}.neutral{background:#202b3e;color:#aebbd0}.main{align-items:end;margin:16px 0 12px}.runno{font-size:29px;font-weight:850}.open{background:#62a8ff;color:#08111e;text-decoration:none;padding:9px 11px;border-radius:10px;font-size:12px;font-weight:800}.recent{border-top:1px solid #22304a;padding-top:10px}.recent-title{font-size:10px;color:#8fa0bd;text-transform:uppercase}.item{padding:7px 0;border-bottom:1px solid #19253a}.item a{color:#eef4ff;text-decoration:none;font-size:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#74829a;margin-right:7px}.dot.ok{background:#37d996}.dot.bad{background:#ff6577}.dot.run{background:#ffd166}.empty,.err{font-size:12px;color:#8fa0bd;padding:10px 0}.err{color:#ff9aa6}.foot{text-align:center;color:#64738c;font-size:11px;margin-top:20px}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.title{font-size:21px}}</style></head><body><div class="wrap"><div class="top"><div><div class="title">⚡ AI Command Center</div><div class="sub">GitHub Automation Monitor • 4 pipelines</div></div><button class="btn" onclick="loadAll()">↻ Refresh</button></div><div class="stats"><div class="stat"><b>4</b><span>Automations</span></div><div class="stat"><b id="success">—</b><span>Success</span></div><div class="stat"><b id="running">—</b><span>Running</span></div><div class="stat"><b id="failed">—</b><span>Failed</span></div></div><div id="grid" class="grid"></div><div class="foot">Live public GitHub Actions data • <span id="updated">—</span></div></div><script>
-const P=[['🎨','Toon Kids','toon_kids_automation','toon_kids_daily.yml'],['🧠','Think Fast Daily','think-fast-daily-automation','think-fast-daily.yml'],['🔮','What If Daily','what-if-daily-automation','what_if_daily.yml'],['🌎','FactVerse AI','factverse-ai-automation','factverse.yml']],O='connectwithds5-wq';
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const ago=x=>{let m=Math.floor((Date.now()-new Date(x))/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.floor(m/60)+' hr ago':Math.floor(m/1440)+' day(s) ago'};
-const cls=s=>s==='success'?'ok':['failure','cancelled','timed_out'].includes(s)?'bad':['in_progress','queued','waiting','requested'].includes(s)?'run':'neutral';
-const label=s=>({success:'SUCCESS',failure:'FAILED',cancelled:'CANCELLED',in_progress:'RUNNING',queued:'QUEUED',timed_out:'TIMEOUT'}[s]||(s||'UNKNOWN').toUpperCase());
-async function one(p){let u=`https://api.github.com/repos/${O}/${p[2]}/actions/workflows/${encodeURIComponent(p[3])}/runs?per_page=8`,r=await fetch(u);if(!r.ok)throw Error('GitHub API '+r.status);return r.json()}
-function card(p,d){let a=d.workflow_runs||[],x=a[0];if(!x)return `<div class=card><div class=name>${p[0]} ${p[1]}</div><div class=empty>No workflow runs found.</div></div>`;let s=x.conclusion||x.status;return `<div class=card><div class=head><div><div class=name>${p[0]} ${p[1]}</div><div class=repo>${O}/${p[2]}</div></div><span class="badge ${cls(s)}">${label(s)}</span></div><div class=main><div><div class=runno>Run #${x.run_number}</div><div class=time>${ago(x.updated_at)} • ${new Date(x.updated_at).toLocaleString()}</div></div><a class=open href="https://github.com/${O}/${p[2]}/actions/runs/${x.id}" target=_blank>Open Run ↗</a></div><div class=recent><div class=recent-title>Recent runs</div>${a.slice(0,6).map(q=>{let z=q.conclusion||q.status;return `<div class=item><a href="https://github.com/${O}/${p[2]}/actions/runs/${q.id}" target=_blank><span class="dot ${cls(z)}"></span>#${q.run_number} ${esc(q.event||'workflow')}</a><span class=time>${ago(q.updated_at)}</span></div>`}).join('')}</div></div>`}
-async function loadAll(){let g=document.getElementById('grid');g.innerHTML=P.map(p=>`<div class="card"><div class=name>${p[0]} ${p[1]}</div><div class=empty>Loading GitHub Actions…</div></div>`).join('');let R=[];for(let p of P)try{R.push([p,await one(p)])}catch(e){R.push([p,null,e])}g.innerHTML=R.map(v=>v[1]?card(v[0],v[1]):`<div class=card><div class=name>${v[0][0]} ${v[0][1]}</div><div class=err>Could not load GitHub Actions data: ${esc(v[2].message)}</div><div style="margin-top:10px"><a class=open href="https://github.com/${O}/${v[0][2]}/actions/workflows/${v[0][3]}" target=_blank>Open Actions ↗</a></div></div>`).join('');let s=0,f=0,r=0;R.forEach(v=>{let x=v[1]?.workflow_runs?.[0],c=x?.conclusion,t=x?.status;if(c==='success')s++;else if(['failure','cancelled','timed_out'].includes(c))f++;else if(['in_progress','queued','waiting','requested'].includes(t))r++});success.textContent=s;failed.textContent=f;running.textContent=r;updated.textContent=new Date().toLocaleString()}loadAll();setInterval(loadAll,120000);
-</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070b14">
+<title>⚡ AI Command Center V2</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:#070b14;
+color:#eef4ff;
+font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
+
+.wrap{
+max-width:1100px;
+margin:auto;
+padding:18px 14px 30px;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+margin-bottom:18px;
+}
+
+.title{
+font-size:25px;
+font-weight:850;
+}
+
+.sub{
+font-size:12px;
+color:#8fa0bd;
+margin-top:3px;
+}
+
+.btn{
+background:#10192b;
+color:#eef4ff;
+border:1px solid #263753;
+border-radius:12px;
+padding:10px 14px;
+font-weight:750;
+cursor:pointer;
+}
+
+.btn:active{
+transform:scale(.97);
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+margin-bottom:16px;
+}
+
+.stat{
+background:#0f1626;
+border:1px solid #22304a;
+border-radius:17px;
+padding:15px;
+}
+
+.stat b{
+display:block;
+font-size:24px;
+}
+
+.stat span{
+font-size:10px;
+color:#8fa0bd;
+text-transform:uppercase;
+letter-spacing:.5px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:13px;
+}
+
+.card{
+background:#0f1626;
+border:1px solid #22304a;
+border-radius:18px;
+padding:16px;
+}
+
+.head{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:10px;
+}
+
+.name{
+font-size:18px;
+font-weight:850;
+}
+
+.repo{
+font-size:10px;
+color:#70819f;
+margin-top:3px;
+word-break:break-all;
+}
+
+.badge{
+font-size:10px;
+font-weight:850;
+padding:6px 9px;
+border-radius:20px;
+white-space:nowrap;
+}
+
+.ok{
+background:#123e30;
+color:#37d996;
+}
+
+.bad{
+background:#461b25;
+color:#ff8b99;
+}
+
+.run{
+background:#3d3313;
+color:#ffd166;
+}
+
+.neutral{
+background:#202b3e;
+color:#aebbd0;
+}
+
+.main{
+display:flex;
+justify-content:space-between;
+align-items:end;
+gap:10px;
+margin:18px 0 14px;
+}
+
+.runno{
+font-size:28px;
+font-weight:900;
+}
+
+.time{
+font-size:10px;
+color:#8090aa;
+margin-top:3px;
+}
+
+.actions{
+display:flex;
+gap:7px;
+flex-wrap:wrap;
+justify-content:flex-end;
+}
+
+.open,
+.runbtn{
+text-decoration:none;
+border-radius:10px;
+padding:9px 11px;
+font-size:11px;
+font-weight:850;
+display:inline-block;
+}
+
+.open{
+background:#62a8ff;
+color:#08111e;
+}
+
+.runbtn{
+background:#173c31;
+color:#48e0a4;
+border:1px solid #285d4d;
+cursor:pointer;
+}
+
+.runbtn:active{
+transform:scale(.96);
+}
+
+.recent{
+border-top:1px solid #22304a;
+padding-top:11px;
+}
+
+.recent-title{
+font-size:10px;
+color:#8fa0bd;
+text-transform:uppercase;
+margin-bottom:3px;
+}
+
+.item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+padding:7px 0;
+border-bottom:1px solid #19253a;
+}
+
+.item a{
+color:#eef4ff;
+text-decoration:none;
+font-size:11px;
+}
+
+.dot{
+display:inline-block;
+width:8px;
+height:8px;
+border-radius:50%;
+background:#74829a;
+margin-right:7px;
+}
+
+.dot.ok{background:#37d996}
+.dot.bad{background:#ff6577}
+.dot.run{background:#ffd166}
+
+.next{
+margin-top:13px;
+padding:10px 11px;
+background:#0b1220;
+border:1px solid #1d2b42;
+border-radius:12px;
+font-size:11px;
+color:#9baaca;
+}
+
+.next b{
+color:#eef4ff;
+}
+
+.empty,.err{
+font-size:12px;
+color:#8fa0bd;
+padding:12px 0;
+}
+
+.err{
+color:#ff9aa6;
+}
+
+.foot{
+text-align:center;
+color:#64738c;
+font-size:10px;
+margin-top:22px;
+}
+
+.toast{
+position:fixed;
+left:50%;
+bottom:20px;
+transform:translateX(-50%);
+background:#101b2d;
+border:1px solid #30425f;
+color:#eef4ff;
+padding:11px 16px;
+border-radius:12px;
+font-size:12px;
+font-weight:700;
+display:none;
+z-index:999;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+
+@media(max-width:700px){
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+.grid{
+grid-template-columns:1fr;
+}
+.title{
+font-size:21px;
+}
+.main{
+align-items:flex-start;
+flex-direction:column;
+}
+.actions{
+justify-content:flex-start;
+width:100%;
+}
+}
+
+@media(min-width:701px){
+.card:hover{
+border-color:#344967;
+transform:translateY(-1px);
+transition:.15s;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<div class="top">
+<div>
+<div class="title">⚡ AI Command Center V2</div>
+<div class="sub">GitHub Automation Control • 4 pipelines</div>
+</div>
+
+<button class="btn" onclick="loadAll()">↻ Refresh</button>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<b>4</b>
+<span>Automations</span>
+</div>
+
+<div class="stat">
+<b id="success">—</b>
+<span>Success</span>
+</div>
+
+<div class="stat">
+<b id="running">—</b>
+<span>Running</span>
+</div>
+
+<div class="stat">
+<b id="failed">—</b>
+<span>Failed</span>
+</div>
+
+</div>
+
+<div id="grid" class="grid"></div>
+
+<div class="foot">
+Live public GitHub Actions data • V2 • <span id="updated">—</span>
+</div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+
+const OWNER="connectwithds5-wq";
+
+const PIPELINES=[
+
+{
+icon:"🎨",
+name:"Toon Kids",
+repo:"toon_kids_automation",
+workflow:"toon_kids_daily.yml",
+schedule:"1:00 PM & 8:30 PM IST"
+},
+
+{
+icon:"🧠",
+name:"Think Fast Daily",
+repo:"think-fast-daily-automation",
+workflow:"think-fast-daily.yml",
+schedule:"12:00 PM & 6:00 PM IST"
+},
+
+{
+icon:"🔮",
+name:"What If Daily",
+repo:"what-if-daily-automation",
+workflow:"what_if_daily.yml",
+schedule:"7:00 PM & 10:30 PM IST"
+},
+
+{
+icon:"🌎",
+name:"FactVerse AI",
+repo:"factverse-ai-automation",
+workflow:"factverse.yml",
+schedule:"12:00 PM & 6:00 PM IST"
+}
+
+];
+
+function esc(s){
+return String(s??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[c]));
+}
+
+function ago(date){
+
+let mins=Math.floor(
+(Date.now()-new Date(date))/60000
+);
+
+if(mins<1)return"just now";
+if(mins<60)return mins+" min ago";
+
+let hrs=Math.floor(mins/60);
+
+if(hrs<24)return hrs+" hr ago";
+
+return Math.floor(hrs/24)+" day(s) ago";
+}
+
+function cls(status){
+
+if(status==="success")return"ok";
+
+if([
+"failure",
+"cancelled",
+"timed_out"
+].includes(status))return"bad";
+
+if([
+"in_progress",
+"queued",
+"waiting",
+"requested"
+].includes(status))return"run";
+
+return"neutral";
+}
+
+function label(status){
+
+return({
+
+success:"SUCCESS",
+failure:"FAILED",
+cancelled:"CANCELLED",
+in_progress:"RUNNING",
+queued:"QUEUED",
+waiting:"WAITING",
+requested:"REQUESTED",
+timed_out:"TIMEOUT"
+
+}[status]||(status||"UNKNOWN").toUpperCase());
+
+}
+
+function showToast(message){
+
+const t=document.getElementById("toast");
+
+t.textContent=message;
+t.style.display="block";
+
+clearTimeout(window.toastTimer);
+
+window.toastTimer=setTimeout(()=>{
+t.style.display="none";
+},3000);
+
+}
+
+function openActions(p){
+
+window.open(
+`https://github.com/${OWNER}/${p.repo}/actions/workflows/${p.workflow}`,
+"_blank"
+);
+
+}
+
+function runNow(p){
+
+/*
+GitHub Pages is intentionally not given a PAT.
+Therefore this button safely opens the workflow page.
+From there GitHub's native "Run workflow" button
+can start the automation without exposing credentials.
+*/
+
+openActions(p);
+
+showToast(
+"GitHub Actions opened — tap Run workflow"
+);
+
+}
+
+async function getRuns(p){
+
+const url=
+`https://api.github.com/repos/${OWNER}/${p.repo}/actions/workflows/${encodeURIComponent(p.workflow)}/runs?per_page=8`;
+
+const response=await fetch(url,{
+headers:{
+"Accept":"application/vnd.github+json"
+}
+});
+
+if(!response.ok){
+
+throw new Error(
+"GitHub API "+response.status
+);
+
+}
+
+return response.json();
+
+}
+
+function card(p,data){
+
+const runs=data.workflow_runs||[];
+
+const latest=runs[0];
+
+if(!latest){
+
+return`
+
+<div class="card">
+
+<div class="name">
+${p.icon} ${p.name}
+</div>
+
+<div class="empty">
+No workflow runs found.
+</div>
+
+<div class="actions">
+
+<a class="open"
+href="https://github.com/${OWNER}/${p.repo}/actions/workflows/${p.workflow}"
+target="_blank">
+Open Actions ↗
+</a>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+const status=
+latest.conclusion||
+latest.status||
+"unknown";
+
+return`
+
+<div class="card">
+
+<div class="head">
+
+<div>
+
+<div class="name">
+${p.icon} ${p.name}
+</div>
+
+<div class="repo">
+${OWNER}/${p.repo}
+</div>
+
+</div>
+
+<span class="badge ${cls(status)}">
+${label(status)}
+</span>
+
+</div>
+
+
+<div class="main">
+
+<div>
+
+<div class="runno">
+Run #${latest.run_number}
+</div>
+
+<div class="time">
+${ago(latest.updated_at)}
+•
+${new Date(latest.updated_at).toLocaleString()}
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="runbtn"
+onclick='runNow(${JSON.stringify(p)})'>
+🚀 RUN NOW
+</button>
+
+<a
+class="open"
+href="https://github.com/${OWNER}/${p.repo}/actions/runs/${latest.id}"
+target="_blank">
+Open Run ↗
+</a>
+
+</div>
+
+</div>
+
+
+<div class="next">
+⏰ <b>Schedule:</b> ${p.schedule}
+</div>
+
+
+<div class="recent">
+
+<div class="recent-title">
+Recent runs
+</div>
+
+${runs.slice(0,6).map(q=>{
+
+const z=q.conclusion||q.status;
+
+return`
+
+<div class="item">
+
+<a
+href="https://github.com/${OWNER}/${p.repo}/actions/runs/${q.id}"
+target="_blank">
+
+<span class="dot ${cls(z)}"></span>
+
+#${q.run_number}
+${esc(q.event||"workflow")}
+
+</a>
+
+<span class="time">
+${ago(q.updated_at)}
+</span>
+
+</div>
+
+`;
+
+}).join("")}
+
+</div>
+
+</div>
+
+`;
+
+}
+
+async function loadAll(){
+
+const grid=document.getElementById("grid");
+
+grid.innerHTML=PIPELINES.map(p=>`
+
+<div class="card">
+
+<div class="name">
+${p.icon} ${p.name}
+</div>
+
+<div class="empty">
+Loading GitHub Actions…
+</div>
+
+</div>
+
+`).join("");
+
+let results=[];
+
+for(const p of PIPELINES){
+
+try{
+
+const data=await getRuns(p);
+
+results.push({
+p,
+data
+});
+
+}catch(error){
+
+results.push({
+p,
+error
+});
+
+}
+
+}
+
+grid.innerHTML=results.map(x=>{
+
+if(x.data){
+
+return card(x.p,x.data);
+
+}
+
+return`
+
+<div class="card">
+
+<div class="name">
+${x.p.icon} ${x.p.name}
+</div>
+
+<div class="err">
+Could not load GitHub Actions data:
+${esc(x.error.message)}
+</div>
+
+<div class="actions">
+
+<a
+class="open"
+href="https://github.com/${OWNER}/${x.p.repo}/actions/workflows/${x.p.workflow}"
+target="_blank">
+Open Actions ↗
+</a>
+
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+
+let successCount=0;
+let failedCount=0;
+let runningCount=0;
+
+results.forEach(x=>{
+
+const latest=x.data?.workflow_runs?.[0];
+
+if(!latest)return;
+
+const conclusion=latest.conclusion;
+const status=latest.status;
+
+if(conclusion==="success"){
+
+successCount++;
+
+}
+
+else if([
+"failure",
+"cancelled",
+"timed_out"
+].includes(conclusion)){
+
+failedCount++;
+
+}
+
+else if([
+"in_progress",
+"queued",
+"waiting",
+"requested"
+].includes(status)){
+
+runningCount++;
+
+}
+
+});
+
+document.getElementById("success").textContent=
+successCount;
+
+document.getElementById("failed").textContent=
+failedCount;
+
+document.getElementById("running").textContent=
+runningCount;
+
+document.getElementById("updated").textContent=
+new Date().toLocaleString();
+
+}
+
+loadAll();
+
+setInterval(loadAll,120000);
+
+</script>
+
+</body>
+</html>
