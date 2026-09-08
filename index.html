@@ -1,155 +1,34 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#070b14">
-<title>⚡ AI Command Center V5</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#070b14">
+<title>⚡ AI Command Center V6</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#070b14;color:#eef4ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}.wrap{max-width:1100px;margin:auto;padding:18px 14px 30px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.title{font-size:25px;font-weight:850}.sub,.repo,.time{font-size:11px;color:#8fa0bd}.btn,.runbtn,.open{border-radius:11px;padding:10px 13px;font-weight:800;border:1px solid #263753;text-decoration:none;font-size:11px}.btn{background:#10192b;color:#eef4ff;cursor:pointer}.stats,.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(4,1fr);margin-bottom:15px}.grid{grid-template-columns:repeat(2,1fr)}.stat,.card{background:#0f1626;border:1px solid #22304a;border-radius:17px;padding:15px}.stat b{display:block;font-size:24px}.stat span,.recent-title,.section-label{font-size:10px;color:#8fa0bd;text-transform:uppercase}.head,.main,.item{display:flex;justify-content:space-between;gap:10px}.name{font-size:18px;font-weight:850}.badge{font-size:10px;font-weight:850;padding:6px 9px;border-radius:20px;white-space:nowrap}.ok{background:#123e30;color:#37d996}.bad{background:#461b25;color:#ff8b99}.run{background:#3d3313;color:#ffd166}.neutral{background:#202b3e;color:#aebbd0}.main{align-items:end;margin:17px 0 13px}.runno{font-size:28px;font-weight:900}.actions{display:flex;gap:7px;flex-wrap:wrap}.runbtn{background:#173c31;color:#48e0a4;border-color:#285d4d;cursor:pointer}.runbtn:disabled{opacity:.55;cursor:wait}.open{background:#62a8ff;color:#08111e;border-color:#62a8ff}.recent{border-top:1px solid #22304a;padding-top:10px}.item{padding:7px 0;border-bottom:1px solid #19253a}.item a{color:#eef4ff;text-decoration:none;font-size:11px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#74829a;margin-right:7px}.dot.ok{background:#37d996}.dot.bad{background:#ff6577}.dot.run{background:#ffd166}.schedule{margin:11px 0;padding:9px 10px;background:#0b1220;border:1px solid #1d2b42;border-radius:11px;font-size:11px;color:#9baaca}.empty,.err{font-size:12px;color:#8fa0bd;padding:11px 0}.err{color:#ff9aa6}.foot{text-align:center;color:#64738c;font-size:10px;margin-top:20px}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#101b2d;border:1px solid #30425f;color:#eef4ff;padding:11px 16px;border-radius:12px;font-size:12px;font-weight:700;display:none;z-index:99;box-shadow:0 10px 30px #0008}
-.strategy{margin:16px 0}.strategy-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}.strategy-card{background:#0f1626;border:1px solid #22304a;border-radius:17px;padding:15px}.strategy-card h3{margin:0 0 8px;font-size:15px}.strategy-card p{font-size:12px;line-height:1.55;color:#b9c5d8;margin:8px 0}.confidence{display:inline-block;font-size:10px;font-weight:850;padding:5px 8px;border-radius:20px;background:#202b3e;color:#ffd166}.topic{border:1px solid #22304a;background:#0b1220;border-radius:13px;padding:12px;margin-top:10px}.topic b{font-size:13px}.topic .hook{margin-top:6px;color:#eef4ff;font-weight:750;font-size:12px}.topic .meta{margin-top:7px;font-size:10px;color:#8fa0bd;line-height:1.5}.latest{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.metric-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.metric{background:#0b1220;border:1px solid #1d2b42;border-radius:10px;padding:8px 10px}.metric b{font-size:17px}.metric span{display:block;font-size:9px;color:#8fa0bd;text-transform:uppercase}.latest-title{font-size:16px;font-weight:850;line-height:1.3}.linkbtn{display:inline-block;margin-top:8px;background:#62a8ff;color:#08111e;border-radius:10px;padding:9px 12px;text-decoration:none;font-size:11px;font-weight:850}.list{margin:0;padding-left:18px}.list li{font-size:11px;color:#b9c5d8;margin:7px 0;line-height:1.45}
-@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.grid,.strategy-grid,.latest{grid-template-columns:1fr}.title{font-size:21px}.main{align-items:flex-start;flex-direction:column}.actions{width:100%}}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="top"><div><div class="title">⚡ AI Command Center V5</div><div class="sub">GitHub Automation Control • 5 pipelines • AI Strategy • Secure RUN NOW</div></div><button class="btn" onclick="loadAll()">↻ Refresh</button></div>
-
-<div class="stats">
-<div class="stat"><b>5</b><span>Automations</span></div>
-<div class="stat"><b id="success">—</b><span>Success</span></div>
-<div class="stat"><b id="running">—</b><span>Running</span></div>
-<div class="stat"><b id="failed">—</b><span>Failed</span></div>
-</div>
-
-<div class="strategy">
-<div class="section-label">🧠 AI CONTENT STRATEGY</div>
-<div class="strategy-grid">
-<div class="strategy-card">
-<h3>🎯 Next Best Content</h3>
-<div id="strategyStatus" class="empty">Loading AI strategy…</div>
-<div id="topics"></div>
-</div>
-<div class="strategy-card">
-<h3>📈 What The AI Learned</h3>
-<div id="strategySummary" class="empty">Loading…</div>
-<div id="working"></div>
-<div id="improve"></div>
-</div>
-</div>
-
-<div class="latest">
-<div class="strategy-card">
-<h3>🆕 Latest Uploaded Video</h3>
-<div id="latestVideo" class="empty">Loading latest YouTube video…</div>
-</div>
-<div class="strategy-card">
-<h3>⏰ Recommended Posting</h3>
-<div id="windows" class="empty">Loading…</div>
-</div>
-</div>
-</div>
-
-<div id="grid" class="grid"></div>
-<div class="foot">Live GitHub Actions + AI strategy data • V5 • <span id="updated">—</span></div>
-</div>
-<div id="toast" class="toast"></div>
-
+*{box-sizing:border-box}body{margin:0;background:#070b14;color:#eef4ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}.wrap{max-width:1100px;margin:auto;padding:18px 14px 30px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.title{font-size:25px;font-weight:900}.sub,.repo,.time{font-size:11px;color:#8fa0bd}.btn,.runbtn,.open{border-radius:11px;padding:10px 13px;font-weight:800;border:1px solid #263753;text-decoration:none;font-size:11px}.btn{background:#10192b;color:#eef4ff;cursor:pointer}.stats,.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(4,1fr);margin-bottom:15px}.grid{grid-template-columns:repeat(2,1fr)}.stat,.card{background:#0f1626;border:1px solid #22304a;border-radius:17px;padding:15px}.stat b{display:block;font-size:24px}.stat span,.section-label{font-size:10px;color:#8fa0bd;text-transform:uppercase}.head,.main,.item{display:flex;justify-content:space-between;gap:10px}.name{font-size:18px;font-weight:850}.badge{font-size:10px;font-weight:850;padding:6px 9px;border-radius:20px;white-space:nowrap}.ok{background:#123e30;color:#37d996}.bad{background:#461b25;color:#ff8b99}.run{background:#3d3313;color:#ffd166}.neutral{background:#202b3e;color:#aebbd0}.main{align-items:end;margin:17px 0 13px}.runno{font-size:28px;font-weight:900}.actions{display:flex;gap:7px;flex-wrap:wrap}.runbtn{background:#173c31;color:#48e0a4;border-color:#285d4d;cursor:pointer}.runbtn:disabled{opacity:.55;cursor:wait}.open,.linkbtn{background:#62a8ff;color:#08111e;border-color:#62a8ff}.recent{border-top:1px solid #22304a;padding-top:10px}.item{padding:7px 0;border-bottom:1px solid #19253a}.item a{color:#eef4ff;text-decoration:none;font-size:11px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#74829a;margin-right:7px}.dot.ok{background:#37d996}.dot.bad{background:#ff6577}.dot.run{background:#ffd166}.schedule{margin:11px 0;padding:9px 10px;background:#0b1220;border:1px solid #1d2b42;border-radius:11px;font-size:11px;color:#9baaca}.empty,.err{font-size:12px;color:#8fa0bd;padding:11px 0}.err{color:#ff9aa6}.foot{text-align:center;color:#64738c;font-size:10px;margin-top:20px}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#101b2d;border:1px solid #30425f;color:#eef4ff;padding:11px 16px;border-radius:12px;font-size:12px;font-weight:700;display:none;z-index:99}.strategy{margin:16px 0}.strategy-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}.strategy-card{background:#0f1626;border:1px solid #22304a;border-radius:17px;padding:15px}.strategy-card h3{margin:0 0 8px;font-size:15px}.strategy-card p{font-size:12px;line-height:1.55;color:#b9c5d8;margin:8px 0}.pill{display:inline-block;font-size:10px;font-weight:850;padding:5px 8px;border-radius:20px;background:#202b3e;color:#ffd166;margin:2px}.lane{border:1px solid #22304a;background:#0b1220;border-radius:13px;padding:12px;margin-top:10px}.lane b{font-size:13px}.lane .meta{margin-top:7px;font-size:10px;color:#8fa0bd;line-height:1.5}.weight{display:flex;justify-content:space-between;border-bottom:1px solid #19253a;padding:6px 0;font-size:11px}.topic{border:1px solid #22304a;background:#0b1220;border-radius:13px;padding:12px;margin-top:10px}.topic b{font-size:13px}.topic .meta{margin-top:7px;font-size:10px;color:#8fa0bd;line-height:1.5}.history{max-height:280px;overflow:auto}.history .item{display:block}.history .item b{font-size:11px}.linkbtn{display:inline-block;margin-top:8px;border-radius:10px;padding:9px 12px;text-decoration:none;font-size:11px;font-weight:850}.latest{margin-top:12px}.metric-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.metric{background:#0b1220;border:1px solid #1d2b42;border-radius:10px;padding:8px 10px}.metric b{font-size:17px}.metric span{display:block;font-size:9px;color:#8fa0bd;text-transform:uppercase}.latest-title{font-size:16px;font-weight:850;line-height:1.3}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.grid,.strategy-grid{grid-template-columns:1fr}.title{font-size:21px}.main{align-items:flex-start;flex-direction:column}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><div><div class="title">⚡ AI Command Center V6</div><div class="sub">GitHub Automation Control • Growth Strategy • Smart What If slots</div></div><button class="btn" onclick="loadAll()">↻ Refresh</button></div>
+<div class="stats"><div class="stat"><b>5</b><span>Automations</span></div><div class="stat"><b id="success">—</b><span>Success</span></div><div class="stat"><b id="running">—</b><span>Running</span></div><div class="stat"><b id="failed">—</b><span>Failed</span></div></div>
+<div class="strategy"><div class="section-label">🧠 WHAT IF DAILY — AI GROWTH STRATEGY</div><div class="strategy-grid">
+<div class="strategy-card"><h3>🎯 Strategy Lanes</h3><div id="strategyStatus" class="empty">Loading growth strategy…</div><div id="lanes"></div><h3 style="margin-top:15px">⚖️ Ranking Weights</h3><div id="weights"></div></div>
+<div class="strategy-card"><h3>📅 Posting Plan</h3><div id="plan" class="empty">Loading…</div><h3 style="margin-top:15px">📚 Recent Topic History</h3><div id="history" class="history"></div></div></div>
+<div class="strategy-card latest"><h3>🔁 Learning Loop</h3><p>21-day controlled test. Compare retention, viewed-vs-swiped, engaged views, likes, comments and subscribers. Shift toward consistently winning lanes and slots instead of reacting to one video.</p></div></div>
+<div id="grid" class="grid"></div><div class="foot">Live GitHub Actions + What If growth strategy • V6 • <span id="updated">—</span></div></div><div id="toast" class="toast"></div>
 <script>
-const OWNER="connectwithds5-wq";
-const RELAY_URL="https://ai-command-center-relay.darjid314.workers.dev";
-const STRATEGY_URL="https://raw.githubusercontent.com/connectwithds5-wq/auto-social-post/main/strategy.json";
-const HISTORY_URL="https://raw.githubusercontent.com/connectwithds5-wq/auto-social-post/main/strategy_history.json";
-
-const P=[
-["🎨","Toon Kids","toon_kids_automation","toon_kids_daily.yml","1:00 PM & 8:30 PM IST"],
-["🧠","Think Fast Daily","think-fast-daily-automation","think-fast-daily.yml","12:00 PM & 6:00 PM IST"],
-["🔮","What If Daily","what-if-daily-automation","what_if_daily.yml","7:00 PM & 10:30 PM IST"],
-["🌎","FactVerse AI","factverse-ai-automation","factverse.yml","12:00 PM & 6:00 PM IST"],
-["📱","Auto Social Post","auto-social-post","generate.yml","12:00 PM & 6:00 PM IST"]
-];
-
+const OWNER="connectwithds5-wq",RELAY_URL="https://ai-command-center-relay.darjid314.workers.dev";
+const STRATEGY_URL="https://raw.githubusercontent.com/connectwithds5-wq/what-if-daily-automation/main/growth_strategy.json";
+const HISTORY_URL="https://raw.githubusercontent.com/connectwithds5-wq/what-if-daily-automation/main/topic_history.json";
+const P=[["🎨","Toon Kids","toon_kids_automation","toon_kids_daily.yml","1:00 PM & 8:30 PM IST"],["🧠","Think Fast Daily","think-fast-daily-automation","think-fast-daily.yml","12:00 PM & 6:00 PM IST"],["🔮","What If Daily","what-if-daily-automation","what_if_daily.yml","7:00 PM & 10:30 PM IST"],["🌎","FactVerse AI","factverse-ai-automation","factverse.yml","12:00 PM & 6:00 PM IST"],["📱","Auto Social Post","auto-social-post","generate.yml","12:00 PM & 6:00 PM IST"]];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ago=x=>{let m=Math.floor((Date.now()-new Date(x))/60000);return m<1?"just now":m<60?m+" min ago":m<1440?Math.floor(m/60)+" hr ago":Math.floor(m/1440)+" day(s) ago"};
 const cls=s=>s==="success"?"ok":["failure","cancelled","timed_out"].includes(s)?"bad":["in_progress","queued","waiting","requested"].includes(s)?"run":"neutral";
 const label=s=>({success:"SUCCESS",failure:"FAILED",cancelled:"CANCELLED",in_progress:"RUNNING",queued:"QUEUED",waiting:"WAITING",requested:"REQUESTED",timed_out:"TIMEOUT"}[s]||(s||"UNKNOWN").toUpperCase());
-
 function toast(x){let t=document.getElementById("toast");t.textContent=x;t.style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display="none",3200)}
-
-async function runs(p){
-let r=await fetch(`https://api.github.com/repos/${OWNER}/${p[2]}/actions/workflows/${encodeURIComponent(p[3])}/runs?per_page=8`,{headers:{"Accept":"application/vnd.github+json"}});
-if(!r.ok)throw Error("GitHub API "+r.status);return r.json()
-}
-
-async function runNow(p,btn){
-btn.disabled=true;btn.textContent="⏳ STARTING…";
-try{
-let r=await fetch(RELAY_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({repo:p[2],workflow:p[3]})});
-let d=await r.json().catch(()=>({}));
-if(!r.ok)throw Error(d.error||"Relay HTTP "+r.status);
-toast("🚀 "+p[1]+" workflow started");btn.textContent="✅ STARTED";
-setTimeout(()=>{btn.disabled=false;btn.textContent="🚀 RUN NOW";loadAll()},3500);
-}catch(e){toast("❌ "+e.message);btn.disabled=false;btn.textContent="🚀 RUN NOW"}
-}
-
-function card(p,d){
-let a=d.workflow_runs||[],x=a[0];
-if(!x)return `<div class=card><div class=name>${p[0]} ${p[1]}</div><div class=empty>No workflow runs found.</div></div>`;
-let s=x.conclusion||x.status;
-return `<div class=card><div class=head><div><div class=name>${p[0]} ${p[1]}</div><div class=repo>${OWNER}/${p[2]}</div></div><span class="badge ${cls(s)}">${label(s)}</span></div>
-<div class=main><div><div class=runno>Run #${x.run_number}</div><div class=time>${ago(x.updated_at)} • ${new Date(x.updated_at).toLocaleString()}</div></div>
-<div class=actions><button class=runbtn onclick="runNow(P[${P.indexOf(p)}],this)">🚀 RUN NOW</button><a class=open href="https://github.com/${OWNER}/${p[2]}/actions/runs/${x.id}" target=_blank>Open Run ↗</a></div></div>
-<div class=schedule>⏰ <b>Schedule:</b> ${p[4]}</div>
-<div class=recent><div class=recent-title>Recent runs</div>${a.slice(0,6).map(q=>{let z=q.conclusion||q.status;return `<div class=item><a href="https://github.com/${OWNER}/${p[2]}/actions/runs/${q.id}" target=_blank><span class="dot ${cls(z)}"></span>#${q.run_number} ${esc(q.event||"workflow")}</a><span class=time>${ago(q.updated_at)}</span></div>`}).join("")}</div></div>`
-}
-
-async function loadStrategy(){
-try{
-let [sr,hr]=await Promise.all([
-fetch(STRATEGY_URL+"?ts="+Date.now()),
-fetch(HISTORY_URL+"?ts="+Date.now())
-]);
-if(!sr.ok)throw Error("Strategy data unavailable");
-let s=await sr.json(),h=hr.ok?await hr.json():{videos:[]};
-let topics=s.next_best_topics||[];
-document.getElementById("strategyStatus").innerHTML=`<span class="confidence">CONFIDENCE: ${esc(s.confidence||"low").toUpperCase()}</span> <span class="time"> • ${s.data_points||0} videos analyzed</span>`;
-document.getElementById("topics").innerHTML=topics.slice(0,3).map((t,i)=>`
-<div class=topic><b>#${i+1} ${esc(t.topic)}</b>
-<div class=hook>“${esc(t.hook)}”</div>
-<div class=meta><b>Format:</b> ${esc(t.format)}<br><b>Why:</b> ${esc(t.reason)}<br><b>Confidence:</b> ${esc(t.confidence)}</div></div>`).join("");
-
-document.getElementById("strategySummary").innerHTML=`<p>${esc(s.overall_summary||"No summary available.")}</p>`;
-document.getElementById("working").innerHTML=`<div class=section-label>WHAT'S WORKING</div><ul class=list>${(s.what_is_working||[]).slice(0,3).map(x=>`<li><b>${esc(x.pattern)}</b> — ${esc(x.action)}</li>`).join("")}</ul>`;
-document.getElementById("improve").innerHTML=`<div class=section-label>WHAT TO IMPROVE</div><ul class=list>${(s.what_to_improve||[]).slice(0,3).map(x=>`<li><b>${esc(x.pattern)}</b> — ${esc(x.action)}</li>`).join("")}</ul>`;
-
-let v=(h.videos||[])[0];
-if(v){
-document.getElementById("latestVideo").innerHTML=`<div class=latest-title>${esc(v.title)}</div>
-<div class=metric-row>
-<div class=metric><b>${Number(v.views||0).toLocaleString()}</b><span>Views</span></div>
-<div class=metric><b>${Number(v.likes||0).toLocaleString()}</b><span>Likes</span></div>
-<div class=metric><b>${Number(v.comments||0).toLocaleString()}</b><span>Comments</span></div>
-</div>
-<div class=time>Uploaded: ${new Date(v.published_at).toLocaleString()}</div>
-<a class=linkbtn href="https://www.youtube.com/watch?v=${encodeURIComponent(v.video_id)}" target=_blank>▶ Open YouTube Video</a>`;
-}
-document.getElementById("windows").innerHTML=(s.best_posting_windows||[]).map(w=>`<div class=topic><b>🕐 ${esc(w.window)}</b><div class=meta>${esc(w.reason)}<br>Confidence: ${esc(w.confidence)}</div></div>`).join("")||"<div class=empty>No recommendation yet.</div>";
-}catch(e){
-document.getElementById("strategyStatus").innerHTML=`<div class=err>${esc(e.message)}</div>`;
-}
-}
-
-async function loadAll(){
-let g=document.getElementById("grid");
-g.innerHTML=P.map(p=>`<div class=card><div class=name>${p[0]} ${p[1]}</div><div class=empty>Loading GitHub Actions…</div></div>`).join("");
-loadStrategy();
-let R=[];for(let p of P)try{R.push([p,await runs(p)])}catch(e){R.push([p,null,e])}
-g.innerHTML=R.map(v=>v[1]?card(v[0],v[1]):`<div class=card><div class=name>${v[0][0]} ${v[0][1]}</div><div class=err>${esc(v[2].message)}</div></div>`).join("");
-let s=0,f=0,r=0;
-R.forEach(v=>{let x=v[1]?.workflow_runs?.[0],c=x?.conclusion,t=x?.status;if(c==="success")s++;else if(["failure","cancelled","timed_out"].includes(c))f++;else if(["in_progress","queued","waiting","requested"].includes(t))r++});
-success.textContent=s;failed.textContent=f;running.textContent=r;updated.textContent=new Date().toLocaleString()
-}
+function currentSlot(){let h=Number(new Intl.DateTimeFormat("en-US",{hour:"numeric",hour12:false,timeZone:"Asia/Kolkata"}).format(new Date()));return h<21?"0":"1"}
+async function runs(p){let r=await fetch(`https://api.github.com/repos/${OWNER}/${p[2]}/actions/workflows/${encodeURIComponent(p[3])}/runs?per_page=8`,{headers:{"Accept":"application/vnd.github+json"}});if(!r.ok)throw Error("GitHub API "+r.status);return r.json()}
+async function runNow(p,btn){btn.disabled=true;btn.textContent="⏳ STARTING…";try{let body={repo:p[2],workflow:p[3]};if(p[2]==="what-if-daily-automation")body.inputs={slot:currentSlot()};let r=await fetch(RELAY_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});let d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Relay HTTP "+r.status);toast("🚀 "+p[1]+(p[2]==="what-if-daily-automation"?" • Slot "+body.inputs.slot:"")+" started");btn.textContent="✅ STARTED";setTimeout(()=>{btn.disabled=false;btn.textContent="🚀 RUN NOW";loadAll()},3500)}catch(e){toast("❌ "+e.message);btn.disabled=false;btn.textContent="🚀 RUN NOW"}}
+function card(p,d){let a=d.workflow_runs||[],x=a[0];if(!x)return `<div class=card><div class=name>${p[0]} ${p[1]}</div><div class=empty>No workflow runs found.</div></div>`;let s=x.conclusion||x.status;return `<div class=card><div class=head><div><div class=name>${p[0]} ${p[1]}</div><div class=repo>${OWNER}/${p[2]}</div></div><span class="badge ${cls(s)}">${label(s)}</span></div><div class=main><div><div class=runno>Run #${x.run_number}</div><div class=time>${ago(x.updated_at)} • ${new Date(x.updated_at).toLocaleString()}</div></div><div class=actions><button class=runbtn onclick="runNow(P[${P.indexOf(p)}],this)">🚀 RUN NOW</button><a class=open href="https://github.com/${OWNER}/${p[2]}/actions/runs/${x.id}" target=_blank>Open Run ↗</a></div></div><div class=schedule>⏰ <b>Schedule:</b> ${p[4]}${p[2]==="what-if-daily-automation"?`<br>🧠 Manual RUN NOW uses current IST slot: <b>${currentSlot()}</b>`:""}</div><div class=recent><div class=section-label>Recent runs</div>${a.slice(0,6).map(q=>{let z=q.conclusion||q.status;return `<div class=item><a href="https://github.com/${OWNER}/${p[2]}/actions/runs/${q.id}" target=_blank><span class="dot ${cls(z)}"></span>#${q.run_number} ${esc(q.event||"workflow")}</a><span class=time>${ago(q.updated_at)}</span></div>`}).join("")}</div></div>`}
+async function loadStrategy(){try{let [sr,hr]=await Promise.all([fetch(STRATEGY_URL+"?ts="+Date.now()),fetch(HISTORY_URL+"?ts="+Date.now())]);if(!sr.ok)throw Error("Growth strategy unavailable");let s=await sr.json(),h=hr.ok?await hr.json():{};let lanes=s.slots||{};document.getElementById("strategyStatus").innerHTML=`<span class=pill>21-DAY TEST</span><span class=pill>2 POSTS/DAY</span><span class=pill>GLOBAL ENGLISH</span>`;document.getElementById("lanes").innerHTML=["slot_0","slot_1"].map(k=>{let x=lanes[k]||{};return `<div class=lane><b>Slot ${k.slice(-1)} • ${esc(x.name||"")}</b><div class=meta>${esc(x.posting_time||"")}<br><b>Topics:</b> ${esc((x.preferred_topic_lanes||[]).join(", "))}<br><b>Style:</b> ${esc((x.preferred_style||[]).join(", "))}</div></div>`}).join("");let w=s.ranking_objective||{};document.getElementById("weights").innerHTML=Object.entries(w).map(([k,v])=>`<div class=weight><span>${esc(k.replaceAll("_"," "))}</span><b>${Math.round(Number(v)*100)}%</b></div>`).join("");document.getElementById("plan").innerHTML=`<div class=lane><b>🌅 Slot 0</b><div class=meta>7:00 PM IST • Universal Curiosity</div></div><div class=lane><b>🌙 Slot 1</b><div class=meta>10:30 PM IST • Extreme Future</div></div>`;let topics=Array.isArray(h)?h:(h.topics||h.history||h.entries||[]);document.getElementById("history").innerHTML=topics.slice(-12).reverse().map(x=>`<div class=item><b>${esc(x.title||x.topic||x)}</b><div class=time>${esc(x.slot!==undefined?"Slot "+x.slot:"")} ${x.created_at?"• "+ago(x.created_at):""}</div></div>`).join("")||`<div class=empty>No topic history yet.</div>`}catch(e){document.getElementById("strategyStatus").innerHTML=`<div class=err>${esc(e.message)}</div>`}}
+async function loadAll(){document.getElementById("grid").innerHTML=P.map(p=>`<div class=card><div class=name>${p[0]} ${p[1]}</div><div class=empty>Loading GitHub Actions…</div></div>`).join("");loadStrategy();let R=[];for(let p of P)try{R.push([p,await runs(p)])}catch(e){R.push([p,null,e])}document.getElementById("grid").innerHTML=R.map(v=>v[1]?card(v[0],v[1]):`<div class=card><div class=name>${v[0][0]} ${v[0][1]}</div><div class=err>${esc(v[2]?.message||"Failed to load")}</div></div>`).join("");let all=R.flatMap(v=>v[1]?.workflow_runs||[]);document.getElementById("success").textContent=all.filter(x=>x.conclusion==="success").length;document.getElementById("failed").textContent=all.filter(x=>["failure","timed_out","cancelled"].includes(x.conclusion)).length;document.getElementById("running").textContent=all.filter(x=>["in_progress","queued","waiting","requested"].includes(x.status)).length;document.getElementById("updated").textContent=new Date().toLocaleString()}
 loadAll();setInterval(loadAll,120000);
-</script>
-</body>
-</html>
+</script></body></html>
