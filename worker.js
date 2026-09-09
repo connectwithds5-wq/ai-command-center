@@ -2,7 +2,8 @@ const ALLOWED = {
   "toon_kids_automation": "toon_kids_daily.yml",
   "think-fast-daily-automation": "think-fast-daily.yml",
   "what-if-daily-automation": "what_if_daily.yml",
-  "factverse-ai-automation": "factverse.yml"
+  "factverse-ai-automation": "factverse.yml",
+  "hindi-emotional-reels-automation": "daily-reel.yml"
 };
 
 const OWNER = "connectwithds5-wq";
