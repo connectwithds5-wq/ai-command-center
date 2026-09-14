@@ -1,0 +1,14 @@
+{
+  "name":"commercial-proposal-automation",
+  "private":true,
+  "version":"1.0.0",
+  "engines":{"node":">=20"},
+  "dependencies":{
+    "formidable":"^3.5.4",
+    "pdf-parse":"^1.1.1",
+    "xlsx":"^0.18.5",
+    "mammoth":"^1.8.0",
+    "docx":"^9.5.1",
+    "pdfkit":"^0.17.1"
+  }
+}
