@@ -43,3 +43,44 @@ The dashboard currently monitors and can manually trigger:
 - Hindi Emotional Reels
 
 Hindi Emotional Reels uses `.github/workflows/daily-reel.yml` and appears as a live automation card with recent runs and a RUN NOW action.
+
+## AI Engine Stack — V9
+
+The Command Center now includes the AI stack already forked under the Darjid314 account:
+
+| Engine | Role |
+|---|---|
+| n8n | Workflow automation |
+| Dify | AI applications and visual workflows |
+| Browser Use | AI browser/RPA |
+| LangGraph | Stateful agent orchestration |
+| CrewAI | Multi-agent execution |
+| OpenHands | Autonomous coding |
+| smolagents | Lightweight agents |
+| LlamaIndex | RAG / knowledge layer |
+| Mem0 | Long-term AI memory |
+| Open WebUI | Central AI interface |
+
+### Target architecture
+
+Open WebUI → Dify → LangGraph → CrewAI/smolagents → Browser Use → n8n → GitHub Actions / business automations.
+
+LlamaIndex and Mem0 provide shared knowledge and memory. OpenHands is kept as the development agent.
+
+### Security
+
+- Never put GitHub PATs, API keys, OAuth secrets or model keys in index.html.
+- Keep secrets in Cloudflare Worker / GitHub Actions / Vercel server-side environment variables.
+- Browser automation should use dedicated accounts and least-privilege credentials.
+- Production device changes should require explicit approval and verification.
+
+### Implementation order
+
+1. Command Center UI
+2. n8n workflow gateway
+3. Dify AI workflow gateway
+4. LangGraph/CrewAI agent layer
+5. Browser Use execution layer
+6. LlamaIndex + Mem0 knowledge/memory
+7. OpenHands development automation
+8. Connect existing proposal, tender, email, content and analytics automations
