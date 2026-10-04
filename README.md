@@ -84,3 +84,17 @@ LlamaIndex and Mem0 provide shared knowledge and memory. OpenHands is kept as th
 6. LlamaIndex + Mem0 knowledge/memory
 7. OpenHands development automation
 8. Connect existing proposal, tender, email, content and analytics automations
+
+
+## n8n Gateway
+
+An importable workflow is included at `integrations/n8n/ai-command-center-gateway.json`.
+
+1. Import this JSON into the n8n instance you control.
+2. Activate the workflow and copy its production webhook URL.
+3. Add that URL as the Cloudflare Worker secret `N8N_WEBHOOK_URL`.
+4. The Command Center can then send approved commands through the Worker without exposing the n8n URL in the browser.
+
+Supported gateway commands: `health`, `proposal`, `tender`, `email`, `content`, `video`, `analytics`.
+
+The gateway is intentionally inactive on import and should be tested with `health` before connecting production workflows.
