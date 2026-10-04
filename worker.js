@@ -16,7 +16,8 @@ export default {async fetch(request,env){
   if(request.method!=="POST")return json({error:"POST only"},405);
   if(!env.GH_TOKEN)return json({error:"GH_TOKEN secret is not configured"},500);
   let body;try{body=await request.json()}catch{return json({error:"Invalid JSON"},400)}
-  const repo=body?.repo,workflow=body?.workflow;
+  const repo=body?.repo,workflow=body?.workflow,action=body?.action;
+  if(action==="n8n"){if(!env.N8N_WEBHOOK_URL)return json({error:"N8N_WEBHOOK_URL secret is not configured"},500); const allowed=["health","proposal","tender","email","content","video","analytics"]; if(!allowed.includes(body?.command))return json({error:"Unsupported n8n command"},403); const nr=await fetch(env.N8N_WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json","X-AI-Command-Center":"1"},body:JSON.stringify({action:body.command,request_id:body.request_id||crypto.randomUUID(),payload:body.payload||{}})}); const nd=await nr.text(); return json({ok:nr.ok,status:nr.status,response:nd.slice(0,2000)},nr.ok?200:nr.status)}
   if(!repo||!workflow)return json({error:"repo and workflow are required"},400);
   if(!ALLOWED[repo]||ALLOWED[repo]!==workflow)return json({error:"Workflow not allowed"},403);
   const url=`https://api.github.com/repos/${OWNER}/${repo}/actions/workflows/${workflow}/dispatches`;
