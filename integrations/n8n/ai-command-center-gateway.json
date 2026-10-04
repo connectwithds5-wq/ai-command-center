@@ -1,0 +1,251 @@
+{
+  "name": "AI Command Center Gateway",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ai-command-center",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-1",
+      "name": "AI Command Center Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -520,
+        0
+      ],
+      "webhookId": "ai-command-center"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body=$json.body ?? $json; return [{json:{source:'ai-command-center',action:body.action ?? 'status',request_id:body.request_id ?? null,payload:body.payload ?? {},received_at:new Date().toISOString()}}];"
+      },
+      "id": "normalize-1",
+      "name": "Normalize Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{$json.action}}",
+              "rightValue": "health",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "switch-1",
+      "name": "Route Action",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status",
+              "name": "status",
+              "value": "ok",
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "AI Command Center → n8n gateway is connected.",
+              "type": "string"
+            },
+            {
+              "id": "received_at",
+              "name": "received_at",
+              "value": "={{$json.received_at}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "health-1",
+      "name": "Health Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        260,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status",
+              "name": "status",
+              "value": "accepted",
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "Request accepted by n8n gateway.",
+              "type": "string"
+            },
+            {
+              "id": "action",
+              "name": "action",
+              "value": "={{$json.action}}",
+              "type": "string"
+            },
+            {
+              "id": "request_id",
+              "name": "request_id",
+              "value": "={{$json.request_id}}",
+              "type": "string"
+            },
+            {
+              "id": "payload",
+              "name": "payload",
+              "value": "={{JSON.stringify($json.payload)}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "generic-1",
+      "name": "Automation Accepted",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        260,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond-health",
+      "name": "Respond Health",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        520,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond-generic",
+      "name": "Respond Accepted",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        520,
+        100
+      ]
+    }
+  ],
+  "connections": {
+    "AI Command Center Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Request": {
+      "main": [
+        [
+          {
+            "node": "Route Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Action": {
+      "main": [
+        [
+          {
+            "node": "Health Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Automation Accepted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Health Response": {
+      "main": [
+        [
+          {
+            "node": "Respond Health",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Automation Accepted": {
+      "main": [
+        [
+          {
+            "node": "Respond Accepted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ai-command-center-gateway-v1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
